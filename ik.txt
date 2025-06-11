@@ -38,23 +38,24 @@ petBtn.TextSize = 16
 local seedLoop = false
 local petLoop = false
 
--- เดาชื่อ RemoteEvent/Function (เปลี่ยนชื่อให้ตรงเกมจริงหากรู้)
+-- Event ต่าง ๆ
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
-local Events = ReplicatedStorage:FindFirstChild("Events")
-local SeedEvent = Events and Events:FindFirstChild("PlantSeed")
-local PetEvent = Events and Events:FindFirstChild("DuplicatePet")
+local EquipPet = ReplicatedStorage:WaitForChild("EquipPet")
 
--- Seed Duplication
+-- ส่วนที่คุณต้องกรอกเอง:
+local petName = "Raccoon"         -- 👈 ใส่ชื่อสัตว์เลี้ยงที่มีจริง
+local seedEvent = "CarrotSeed"            -- 👈 ยังไม่รู้ชื่อ Remote สำหรับปลูกเมล็ด
+
+-- Seed Duplication (ยังคงต้องระบุ Event จริง)
 seedBtn.MouseButton1Click:Connect(function()
     seedLoop = not seedLoop
     if seedLoop then
         seedBtn.Text = "Stop Seed Duplication"
         spawn(function()
             while seedLoop do
-                if SeedEvent then
+                if seedEvent then
                     pcall(function()
-                        -- เปลี่ยน "CarrotSeed" เป็นชื่อจริงของเมล็ดในเกม
-                        SeedEvent:FireServer("CarrotSeed")
+                        seedEvent:FireServer("CarrotSeed") -- 🔄 เปลี่ยนชื่อเมล็ดให้ตรง
                     end)
                 end
                 wait(0.15)
@@ -65,20 +66,17 @@ seedBtn.MouseButton1Click:Connect(function()
     end
 end)
 
--- Pet Duplication
+-- ✅ Pet Duplication ด้วย EquipPet
 petBtn.MouseButton1Click:Connect(function()
     petLoop = not petLoop
     if petLoop then
         petBtn.Text = "Stop Pet Duplication"
         spawn(function()
             while petLoop do
-                if PetEvent then
-                    pcall(function()
-                        -- เปลี่ยน "BunnyPet" เป็นชื่อจริงของสัตว์ในเกม
-                        PetEvent:FireServer("BunnyPet")
-                    end)
-                end
-                wait(0.25)
+                pcall(function()
+                    EquipPet:FireServer(Raccoon)
+                end)
+                wait(0.2)
             end
         end)
     else
