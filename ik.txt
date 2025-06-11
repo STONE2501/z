@@ -1,0 +1,87 @@
+local player = game.Players.LocalPlayer
+local gui = Instance.new("ScreenGui", player:WaitForChild("PlayerGui"))
+gui.Name = "GrowGUI"
+
+local frame = Instance.new("Frame", gui)
+frame.Size = UDim2.new(0, 240, 0, 200)
+frame.Position = UDim2.new(0.5, -120, 0.5, -100)
+frame.BackgroundColor3 = Color3.fromRGB(35, 35, 35)
+frame.BorderSizePixel = 0
+
+local title = Instance.new("TextLabel", frame)
+title.Size = UDim2.new(1, 0, 0, 30)
+title.Text = "Grow a Garden Hub"
+title.TextColor3 = Color3.new(1, 1, 1)
+title.BackgroundTransparency = 1
+title.Font = Enum.Font.SourceSansBold
+title.TextSize = 20
+
+local seedBtn = Instance.new("TextButton", frame)
+seedBtn.Size = UDim2.new(0.9, 0, 0, 40)
+seedBtn.Position = UDim2.new(0.05, 0, 0.4, -20)
+seedBtn.Text = "Toggle Seed Duplication"
+seedBtn.BackgroundColor3 = Color3.fromRGB(0, 150, 100)
+seedBtn.TextColor3 = Color3.new(1,1,1)
+seedBtn.Font = Enum.Font.SourceSansBold
+seedBtn.TextSize = 16
+
+local petBtn = Instance.new("TextButton", frame)
+petBtn.Size = UDim2.new(0.9, 0, 0, 40)
+petBtn.Position = UDim2.new(0.05, 0, 0.7, -20)
+petBtn.Text = "Toggle Pet Duplication"
+petBtn.BackgroundColor3 = Color3.fromRGB(0, 120, 180)
+petBtn.TextColor3 = Color3.new(1,1,1)
+petBtn.Font = Enum.Font.SourceSansBold
+petBtn.TextSize = 16
+
+-- ตัวแปรสถานะ
+local seedLoop = false
+local petLoop = false
+
+-- เดาชื่อ RemoteEvent/Function (เปลี่ยนชื่อให้ตรงเกมจริงหากรู้)
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
+local Events = ReplicatedStorage:FindFirstChild("Events")
+local SeedEvent = Events and Events:FindFirstChild("PlantSeed")
+local PetEvent = Events and Events:FindFirstChild("DuplicatePet")
+
+-- Seed Duplication
+seedBtn.MouseButton1Click:Connect(function()
+    seedLoop = not seedLoop
+    if seedLoop then
+        seedBtn.Text = "Stop Seed Duplication"
+        spawn(function()
+            while seedLoop do
+                if SeedEvent then
+                    pcall(function()
+                        -- เปลี่ยน "CarrotSeed" เป็นชื่อจริงของเมล็ดในเกม
+                        SeedEvent:FireServer("CarrotSeed")
+                    end)
+                end
+                wait(0.15)
+            end
+        end)
+    else
+        seedBtn.Text = "Start Seed Duplication"
+    end
+end)
+
+-- Pet Duplication
+petBtn.MouseButton1Click:Connect(function()
+    petLoop = not petLoop
+    if petLoop then
+        petBtn.Text = "Stop Pet Duplication"
+        spawn(function()
+            while petLoop do
+                if PetEvent then
+                    pcall(function()
+                        -- เปลี่ยน "BunnyPet" เป็นชื่อจริงของสัตว์ในเกม
+                        PetEvent:FireServer("BunnyPet")
+                    end)
+                end
+                wait(0.25)
+            end
+        end)
+    else
+        petBtn.Text = "Start Pet Duplication"
+    end
+end)
